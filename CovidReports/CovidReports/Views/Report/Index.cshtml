@@ -1,0 +1,79 @@
+﻿@model CovidReports.ViewModels.ReportViewModel
+@{
+    ViewBag.Title = "TOP 10 COVID19";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>TOP 10 COVID19</h2>
+
+@using (Html.BeginForm("Index", "Report", FormMethod.Get, new { id = "frgn" }))
+{
+    @Html.DropDownListFor(m => m.Regions, new SelectList(Model.Regions.Data, "iso", "iso"), "Select Region")
+    <input type="submit" id="reportbtn" value="Submit" />
+}
+@using (Html.BeginForm("GetReport", "Report", FormMethod.Get, new { id = "exports" }))
+{
+    <input id="hparam" name="hparam" type="hidden" value="">
+    <input id="btnxml" type="submit" name="submitButton" value="XML" />
+    <input id="btjson" type="submit" name="submitButton" value="JSON" />
+    <input id="btcsv" type="submit" name="submitButton" value="CSV" />
+}
+
+<table class="table table-striped table-hover ">
+    <thead>
+        <tr>
+            <th>@Model.ReportTitle</th>
+            <th>CASES</th>
+            <th>DEATHS</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            foreach (var report in Model.Reports)
+            {
+                <tr>
+                    <td>@report.Name</td>
+                    <td>@report.Confirmed</td>
+                    <td>@report.Deadths</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+@section scripts{
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            $("select").change(function () {
+                var selected = $(this).children("option:selected").val();
+                $("#hparam").val(selected)
+            });
+
+            $("#btnxml").click(function () {
+                var selectedCountry = $('select').find(":selected").text();
+                if (selectedCountry!="Select Region") {
+                    $("#hparam").val(selectedCountry)
+                }
+            });
+
+            $("#btjson").click(function () {
+                var selectedCountry = $('select').find(":selected").text();
+                if (selectedCountry != "Select Region") {
+                    $("#hparam").val(selectedCountry)
+                }
+            });
+
+            $("#btcsv").click(function () {
+                var selectedCountry = $('select').find(":selected").text();
+                if (selectedCountry != "Select Region") {
+                    $("#hparam").val(selectedCountry)
+                }
+            });
+
+
+        });
+    </script>
+
+}
